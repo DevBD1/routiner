@@ -1,5 +1,6 @@
 {
   "expo": {
+    "platforms": ["ios", "android", "web"],
     "name": "routiner",
     "slug": "routiner",
     "version": "1.0.0",
@@ -9,9 +10,16 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.devbd1.routiner"
     },
     "android": {
+      "package": "com.devbd1.routiner",
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "AF:85:DF:F5:39:3E:C1:B5:C5:4D:51:61:56:86:EC:04:4D:C3:65:0E"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -36,6 +44,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "351b6748-97e9-4918-a5ce-867db8edeb15"
+      }
     }
   }
 }
