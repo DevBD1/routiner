@@ -10,14 +10,14 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install --legacy-peer-deps
    ```
 
+   ```bash
+   yarn add expo
+   ```
+
    Extra for MacOS:
    ```bash
    npx expo prebuild
    npx pod-install
-   ```
-
-   ```bash
-   yarn add expo
    ```
 
 2. Start the app
