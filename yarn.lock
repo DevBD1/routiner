@@ -2437,6 +2437,11 @@
     serve-static "^1.13.1"
     ws "^6.2.3"
 
+"@react-native/gradle-plugin@^0.78.1":
+  version "0.78.1"
+  resolved "https://registry.npmjs.org/@react-native/gradle-plugin/-/gradle-plugin-0.78.1.tgz"
+  integrity sha512-v8GJU+8DzQDWO3iuTFI1nbuQ/kzuqbXv07VVtSIMLbdofHzuuQT14DGBacBkrIDKBDTVaBGAc/baDNsyxCghng==
+
 "@react-native/gradle-plugin@0.76.7":
   version "0.76.7"
   resolved "https://registry.npmjs.org/@react-native/gradle-plugin/-/gradle-plugin-0.76.7.tgz"

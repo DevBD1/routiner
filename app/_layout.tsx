@@ -28,7 +28,7 @@ function RootLayoutNav() {
   }, [loaded]);
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || !loaded) return;
 
     const inAuthGroup = segments[0] === 'screens';
 
@@ -39,7 +39,7 @@ function RootLayoutNav() {
       // Redirect away from the sign-in page.
       router.replace('/(tabs)');
     }
-  }, [user, loading, segments]);
+  }, [user, loading, segments, loaded]);
 
   if (!loaded) {
     return null;
