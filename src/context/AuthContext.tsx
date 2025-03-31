@@ -9,6 +9,9 @@ import {
   onAuthStateChanged,
   User,
   signInWithPopup,
+  signOut as firebaseSignOut,
+  linkWithCredential,
+  OAuthProvider,
 } from "firebase/auth";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
@@ -64,6 +67,9 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
   signInAnonymously: () => Promise<void>;
+  signOut: () => Promise<void>;
+  linkWithGoogle: () => Promise<void>;
+  linkWithApple: () => Promise<void>;
   isAppleSignInAvailable: boolean;
 }
 
@@ -131,6 +137,72 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signOut = async () => {
+    try {
+      setLoading(true);
+      console.log('SignOut: Starting sign out process');
+      
+      if (Platform.OS === 'web') {
+        console.log('SignOut: Web platform detected');
+        await firebaseSignOut(auth);
+        console.log('SignOut: Firebase sign out completed');
+      } else {
+        // Handle different sign-in providers
+        const providerId = user?.providerData[0]?.providerId;
+        console.log('SignOut: Provider ID:', providerId);
+        
+        if (providerId === 'google.com') {
+          await GoogleSignin.signOut();
+        } else if (providerId === 'apple.com') {
+          // Apple sign-out is handled automatically by Firebase
+        }
+        await firebaseSignOut(auth);
+      }
+    } catch (error) {
+      console.error("Sign Out Error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const linkWithGoogle = async () => {
+    try {
+      setLoading(true);
+      if (!user) throw new Error('No user logged in');
+
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const tokens = await GoogleSignin.getTokens();
+      const credential = GoogleAuthProvider.credential(tokens.idToken);
+      
+      await linkWithCredential(user, credential);
+      console.log('Successfully linked Google account');
+    } catch (error) {
+      console.error('Error linking Google account:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const linkWithApple = async () => {
+    try {
+      setLoading(true);
+      if (!user) throw new Error('No user logged in');
+      if (!isAppleSignInAvailable) throw new Error('Apple Sign In is not available');
+
+      const credential = await signInWithApple(auth);
+      await linkWithCredential(user, credential);
+      console.log('Successfully linked Apple account');
+    } catch (error) {
+      console.error('Error linking Apple account:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const isAppleSignInAvailable = Platform.OS === 'ios' || Platform.OS === 'web';
 
   return (
@@ -141,6 +213,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithGoogle,
         signInWithApple: handleAppleSignIn,
         signInAnonymously,
+        signOut,
+        linkWithGoogle,
+        linkWithApple,
         isAppleSignInAvailable,
       }}
     >
