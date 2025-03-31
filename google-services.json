@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "74325799052",
+    "project_id": "routinerapp-1f97f",
+    "storage_bucket": "routinerapp-1f97f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74325799052:android:30ec886a335bd960844ba9",
+        "android_client_info": {
+          "package_name": "com.devbd1.routiner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74325799052-uk08ek1mfjep4c3hm08n7d2ivd7sm0iq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT3tCdFCFXc3zMQ8CI5Es68BUcVB2u6uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74325799052-uk08ek1mfjep4c3hm08n7d2ivd7sm0iq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "74325799052-jq5lf1k2djt4bludps7l1gl80s9p7fdl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.BurakDorman.Routiner"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
