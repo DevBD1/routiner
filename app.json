@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "routiner",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -40,7 +40,13 @@
         }
       ],
       "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      "@react-native-firebase/auth",
+      [
+        "expo-auth-session",
+        {
+          "scheme": "myapp"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -51,6 +57,11 @@
       },
       "eas": {
         "projectId": "351b6748-97e9-4918-a5ce-867db8edeb15"
+      },
+      "google": {
+        "androidClientId": "74325799052-hd2cn88lei314ab6tfl78l3lnmbil454.apps.googleusercontent.com",
+        "iosClientId": "74325799052-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com",
+        "webClientId": "74325799052-02fde0e6d6acf8e7844ba9.apps.googleusercontent.com"
       }
     },
     "owner": "devbd1"

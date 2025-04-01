@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  initializeAuth,
   signInWithCredential,
   GoogleAuthProvider,
   signInAnonymously as firebaseSignInAnonymously,
@@ -13,9 +13,14 @@ import {
   linkWithCredential,
   OAuthProvider,
 } from "firebase/auth";
+import { getReactNativePersistence } from "firebase/auth/react-native";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { signInWithApple } from "./appleAuth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { makeRedirectUri } from 'expo-auth-session';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -54,12 +59,11 @@ if (!firebaseConfig.apiKey) {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// Initialize Google Sign In
-GoogleSignin.configure({
-  webClientId: Constants.expoConfig?.extra?.googleWebClientId,
-});
+const auth = Platform.OS === 'web' 
+  ? getAuth(app)
+  : initializeAuth(app, {
+      persistence: getReactNativePersistence(AsyncStorage)
+    });
 
 interface AuthContextType {
   user: User | null;
@@ -79,6 +83,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Debug log for client IDs and configuration
+  console.log('Expo Config:', Constants.expoConfig);
+  console.log('Extra Config:', Constants.expoConfig?.extra);
+  console.log('Google Config:', Constants.expoConfig?.extra?.google);
+  console.log('Platform:', Platform.OS);
+
+  // Initialize Google Sign In
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: Platform.OS === 'android' 
+      ? "74325799052-hd2cn88lei314ab6tfl78l3lnmbil454.apps.googleusercontent.com"
+      : undefined,
+    iosClientId: Platform.OS === 'ios'
+      ? "74325799052-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"
+      : undefined,
+    webClientId: Platform.OS === 'web'
+      ? "74325799052-02fde0e6d6acf8e7844ba9.apps.googleusercontent.com"
+      : undefined,
+    redirectUri: makeRedirectUri({
+      scheme: 'routiner'
+    }),
+  });
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -95,11 +121,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
       } else {
-        await GoogleSignin.hasPlayServices();
-        const userInfo = await GoogleSignin.signIn();
-        const tokens = await GoogleSignin.getTokens();
-        const credential = GoogleAuthProvider.credential(tokens.idToken);
-        await signInWithCredential(auth, credential);
+        const result = await promptAsync();
+        if (result?.type === 'success') {
+          const credential = GoogleAuthProvider.credential(result.authentication?.idToken);
+          await signInWithCredential(auth, credential);
+        }
       }
     } catch (error) {
       console.error("Google Sign In Error:", error);
@@ -116,7 +142,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       setLoading(true);
-      await signInWithApple(auth);
+      const credential = await signInWithApple(auth);
+      await signInWithCredential(auth, credential);
     } catch (error) {
       console.error("Apple Sign In Error:", error);
       throw error;
@@ -152,7 +179,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('SignOut: Provider ID:', providerId);
         
         if (providerId === 'google.com') {
-          await GoogleSignin.signOut();
+          // Google sign-out is handled automatically by Firebase
         } else if (providerId === 'apple.com') {
           // Apple sign-out is handled automatically by Firebase
         }
@@ -171,13 +198,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       if (!user) throw new Error('No user logged in');
 
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const tokens = await GoogleSignin.getTokens();
-      const credential = GoogleAuthProvider.credential(tokens.idToken);
-      
-      await linkWithCredential(user, credential);
-      console.log('Successfully linked Google account');
+      const result = await promptAsync();
+      if (result?.type === 'success') {
+        const credential = GoogleAuthProvider.credential(result.authentication?.idToken);
+        await linkWithCredential(user, credential);
+        console.log('Successfully linked Google account');
+      }
     } catch (error) {
       console.error('Error linking Google account:', error);
       throw error;
