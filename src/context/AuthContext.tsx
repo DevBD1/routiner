@@ -13,7 +13,6 @@ import {
   linkWithCredential,
   OAuthProvider,
 } from "firebase/auth";
-import { getReactNativePersistence } from "firebase/auth/react-native";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { signInWithApple } from "./appleAuth";
@@ -61,9 +60,7 @@ if (!firebaseConfig.apiKey) {
 const app = initializeApp(firebaseConfig);
 const auth = Platform.OS === 'web' 
   ? getAuth(app)
-  : initializeAuth(app, {
-      persistence: getReactNativePersistence(AsyncStorage)
-    });
+  : initializeAuth(app);
 
 interface AuthContextType {
   user: User | null;
