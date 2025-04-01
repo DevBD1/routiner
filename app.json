@@ -53,9 +53,9 @@
         "projectId": "351b6748-97e9-4918-a5ce-867db8edeb15"
       },
       "google": {
-        "androidClientId": "74325799052-hd2cn88lei314ab6tfl78l3lnmbil454.apps.googleusercontent.com",
-        "iosClientId": "74325799052-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com",
-        "webClientId": "74325799052-02fde0e6d6acf8e7844ba9.apps.googleusercontent.com"
+        "androidClientId": "$GOOGLE_ANDROID_CLIENT_ID",
+        "iosClientId": "$GOOGLE_IOS_CLIENT_ID",
+        "webClientId": "$GOOGLE_WEB_CLIENT_ID"
       }
     },
     "owner": "devbd1"
