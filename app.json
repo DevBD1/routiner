@@ -40,13 +40,7 @@
         }
       ],
       "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      [
-        "expo-auth-session",
-        {
-          "scheme": "routiner"
-        }
-      ]
+      "@react-native-firebase/auth"
     ],
     "experiments": {
       "typedRoutes": true
