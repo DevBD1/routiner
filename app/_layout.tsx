@@ -5,9 +5,13 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { useCallback } from 'react';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from '../src/context/AuthContext';
+
+const LOGIN_SCREEN_ROUTE = '/screens/LoginScreen';
+const TABS_ROUTE = '/(tabs)';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,19 +31,21 @@ function RootLayoutNav() {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    if (loading || !loaded) return;
+  const handleNavigation = useCallback(() => { // Wrap router.replace with useCallback
+    if (loading) return; // Simplified condition
 
     const inAuthGroup = segments[0] === 'screens';
 
     if (!user && !inAuthGroup) {
-      // Redirect to the sign-in page.
-      router.replace('/screens/LoginScreen');
+      router.replace(LOGIN_SCREEN_ROUTE); // Use constant
     } else if (user && inAuthGroup) {
-      // Redirect away from the sign-in page.
-      router.replace('/(tabs)');
+      router.replace(TABS_ROUTE); // Use constant
     }
-  }, [user, loading, segments, loaded]);
+  }, [user, loading, segments, router]); // Add router to dependencies
+
+  useEffect(() => {
+    handleNavigation();
+  }, [user, loading, segments, handleNavigation]);
 
   if (!loaded) {
     return null;
@@ -52,7 +58,7 @@ function RootLayoutNav() {
         <Stack.Screen name="screens/LoginScreen" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
   );
 }
