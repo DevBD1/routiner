@@ -1,5 +1,5 @@
 import { StyleSheet, Platform, TouchableOpacity, Alert } from 'react-native';
-import { useAuth } from '@/src/context/AuthContext';
+import { useAuth } from '@/app/context/AuthContext';
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';

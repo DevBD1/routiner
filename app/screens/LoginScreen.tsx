@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Platform, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuth } from "../../src/context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
 
 export default function LoginScreen() {
