@@ -15,11 +15,16 @@ import {
 } from "firebase/auth";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
-import { signInWithApple } from "./appleAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { makeRedirectUri } from 'expo-auth-session';
+
+// Conditionally import Apple authentication
+let signInWithApple: any;
+if (Platform.OS === 'ios') {
+  signInWithApple = require('./appleAuth').signInWithApple;
+}
 
 // Firebase configuration
 const firebaseConfig = {
@@ -226,7 +231,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const isAppleSignInAvailable = Platform.OS === 'ios' || Platform.OS === 'web';
+  const isAppleSignInAvailable = Platform.OS === 'ios';
 
   return (
     <AuthContext.Provider

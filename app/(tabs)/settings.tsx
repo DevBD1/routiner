@@ -13,10 +13,10 @@ export default function SettingsScreen() {
   const handleLogout = () => {
     if (Platform.OS === 'web') {
       // For web, use a simple confirmation
-      if (window.confirm('Are you sure you want to logout?')) {
+      if ((globalThis as any).confirm('Are you sure you want to logout?')) {
         signOut().catch(error => {
           console.error('Logout error:', error);
-          alert('Failed to logout. Please try again.');
+          (globalThis as any).alert('Failed to logout. Please try again.');
         });
       }
     } else {
@@ -48,7 +48,7 @@ export default function SettingsScreen() {
     try {
       if (provider === 'google') {
         await linkWithGoogle();
-      } else if (provider === 'apple' && isAppleSignInAvailable) {
+      } else if (provider === 'apple' && Platform.OS === 'ios' && isAppleSignInAvailable) {
         await linkWithApple();
       }
       Alert.alert('Success', 'Account linked successfully!');
@@ -92,7 +92,7 @@ export default function SettingsScreen() {
           >
             <ThemedText style={styles.linkButtonText}>Link Google Account</ThemedText>
           </TouchableOpacity>
-          {isAppleSignInAvailable && (
+          {Platform.OS === 'ios' && isAppleSignInAvailable && (
             <TouchableOpacity 
               style={styles.linkButton}
               onPress={() => handleLinkAccount('apple')}
